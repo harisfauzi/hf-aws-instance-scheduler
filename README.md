@@ -11,8 +11,7 @@ To deploy the solution to your AWS account simulating the instructions from the 
     ```shell
     AWS_PROFILE=my_aws_account
     AWS_DEFAULT_REGION=ap-southeast-2
-    AWS_DEFAULT_REGION=ap-southeast-2
-    export AWS_PROFILE 
+    export AWS_PROFILE AWS_DEFAULT_REGION
     ```
 
 2. Double check your authentication setup by running:
