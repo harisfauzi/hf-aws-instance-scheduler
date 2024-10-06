@@ -1,0 +1,872 @@
+{
+ "Description": "(SO0030S) instance-scheduler-on-aws remote v1.5.6",
+ "AWSTemplateFormatVersion": "2010-09-09",
+ "Metadata": {
+  "AWS::CloudFormation::Interface": {
+   "ParameterGroups": [
+    {
+     "Label": {
+      "default": "Namespace Configuration"
+     },
+     "Parameters": [
+      "Namespace"
+     ]
+    },
+    {
+     "Label": {
+      "default": "Account Structure"
+     },
+     "Parameters": [
+      "InstanceSchedulerAccount",
+      "UsingAWSOrganizations"
+     ]
+    }
+   ],
+   "ParameterLabels": {
+    "InstanceSchedulerAccount": {
+     "default": "Hub Account ID"
+    },
+    "UsingAWSOrganizations": {
+     "default": "Use AWS Organizations"
+    }
+   }
+  }
+ },
+ "Parameters": {
+  "InstanceSchedulerAccount": {
+   "Type": "String",
+   "AllowedPattern": "(^[0-9]{12}$)",
+   "ConstraintDescription": "Account number is a 12 digit number",
+   "Description": "AccountID of the Instance Scheduler Hub stack that should be allowed to schedule resources in this account."
+  },
+  "Namespace": {
+   "Type": "String",
+   "Description": "Unique identifier used to differentiate between multiple solution deployments. Must be set to the same value as the Hub stack"
+  },
+  "UsingAWSOrganizations": {
+   "Type": "String",
+   "Default": "No",
+   "AllowedValues": [
+    "Yes",
+    "No"
+   ],
+   "Description": "Use AWS Organizations to automate spoke account registration. Must be set to the same value as the Hub stack"
+  },
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Conditions": {
+  "IsMemberOfOrganization": {
+   "Fn::Equals": [
+    {
+     "Ref": "UsingAWSOrganizations"
+    },
+    "Yes"
+   ]
+  },
+  "CDKMetadataAvailable": {
+   "Fn::Or": [
+    {
+     "Fn::Or": [
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "af-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-east-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-northeast-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-northeast-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-southeast-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-southeast-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ca-central-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "cn-north-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "cn-northwest-1"
+       ]
+      }
+     ]
+    },
+    {
+     "Fn::Or": [
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-central-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-north-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-west-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-west-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-west-3"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "il-central-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "me-central-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "me-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "sa-east-1"
+       ]
+      }
+     ]
+    },
+    {
+     "Fn::Or": [
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "us-east-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "us-east-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "us-west-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "us-west-2"
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "Mappings": {
+  "mappings": {
+   "SchedulerRole": {
+    "Name": "Scheduler-Role"
+   },
+   "SchedulerEventBusName": {
+    "Name": "scheduler-event-bus"
+   }
+  },
+  "AppRegistryForInstanceSchedulerSolution25A90F05": {
+   "Data": {
+    "ID": "SO0030",
+    "Version": "v1.5.6",
+    "AppRegistryApplicationName": "instance-scheduler-on-aws",
+    "SolutionName": "instance-scheduler-on-aws",
+    "ApplicationType": "AWS-Solutions"
+   }
+  }
+ },
+ "Resources": {
+  "AppRegistry968496A3": {
+   "Type": "AWS::ServiceCatalogAppRegistry::Application",
+   "Properties": {
+    "Description": {
+     "Fn::Join": [
+      "",
+      [
+       "Service Catalog application to track and manage all your resources for the solution ",
+       {
+        "Fn::FindInMap": [
+         "AppRegistryForInstanceSchedulerSolution25A90F05",
+         "Data",
+         "SolutionName"
+        ]
+       }
+      ]
+     ]
+    },
+    "Name": {
+     "Fn::Join": [
+      "-",
+      [
+       {
+        "Fn::FindInMap": [
+         "AppRegistryForInstanceSchedulerSolution25A90F05",
+         "Data",
+         "AppRegistryApplicationName"
+        ]
+       },
+       {
+        "Ref": "AWS::Region"
+       },
+       {
+        "Ref": "AWS::AccountId"
+       },
+       {
+        "Ref": "AWS::StackName"
+       }
+      ]
+     ]
+    },
+    "Tags": {
+     "Solutions:ApplicationType": {
+      "Fn::FindInMap": [
+       "AppRegistryForInstanceSchedulerSolution25A90F05",
+       "Data",
+       "ApplicationType"
+      ]
+     },
+     "Solutions:SolutionID": {
+      "Fn::FindInMap": [
+       "AppRegistryForInstanceSchedulerSolution25A90F05",
+       "Data",
+       "ID"
+      ]
+     },
+     "Solutions:SolutionName": {
+      "Fn::FindInMap": [
+       "AppRegistryForInstanceSchedulerSolution25A90F05",
+       "Data",
+       "SolutionName"
+      ]
+     },
+     "Solutions:SolutionVersion": {
+      "Fn::FindInMap": [
+       "AppRegistryForInstanceSchedulerSolution25A90F05",
+       "Data",
+       "Version"
+      ]
+     }
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "instance-scheduler-on-aws-remote/AppRegistry/Resource"
+   }
+  },
+  "AppRegistryDefaultApplicationAttributes15279635": {
+   "Type": "AWS::ServiceCatalogAppRegistry::AttributeGroup",
+   "Properties": {
+    "Attributes": {
+     "applicationType": {
+      "Fn::FindInMap": [
+       "AppRegistryForInstanceSchedulerSolution25A90F05",
+       "Data",
+       "ApplicationType"
+      ]
+     },
+     "version": {
+      "Fn::FindInMap": [
+       "AppRegistryForInstanceSchedulerSolution25A90F05",
+       "Data",
+       "Version"
+      ]
+     },
+     "solutionID": {
+      "Fn::FindInMap": [
+       "AppRegistryForInstanceSchedulerSolution25A90F05",
+       "Data",
+       "ID"
+      ]
+     },
+     "solutionName": {
+      "Fn::FindInMap": [
+       "AppRegistryForInstanceSchedulerSolution25A90F05",
+       "Data",
+       "SolutionName"
+      ]
+     }
+    },
+    "Description": "Attribute group for solution information",
+    "Name": {
+     "Fn::Join": [
+      "",
+      [
+       "attgroup-",
+       {
+        "Fn::Join": [
+         "-",
+         [
+          {
+           "Ref": "AWS::Region"
+          },
+          {
+           "Ref": "AWS::StackName"
+          }
+         ]
+        ]
+       }
+      ]
+     ]
+    },
+    "Tags": {
+     "Solutions:ApplicationType": {
+      "Fn::FindInMap": [
+       "AppRegistryForInstanceSchedulerSolution25A90F05",
+       "Data",
+       "ApplicationType"
+      ]
+     },
+     "Solutions:SolutionID": {
+      "Fn::FindInMap": [
+       "AppRegistryForInstanceSchedulerSolution25A90F05",
+       "Data",
+       "ID"
+      ]
+     },
+     "Solutions:SolutionName": {
+      "Fn::FindInMap": [
+       "AppRegistryForInstanceSchedulerSolution25A90F05",
+       "Data",
+       "SolutionName"
+      ]
+     },
+     "Solutions:SolutionVersion": {
+      "Fn::FindInMap": [
+       "AppRegistryForInstanceSchedulerSolution25A90F05",
+       "Data",
+       "Version"
+      ]
+     }
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "instance-scheduler-on-aws-remote/AppRegistry/DefaultApplicationAttributes/Resource"
+   }
+  },
+  "AppRegistryAttributeGroupAssociation53fd40dfa02c3C9A0EFF": {
+   "Type": "AWS::ServiceCatalogAppRegistry::AttributeGroupAssociation",
+   "Properties": {
+    "Application": {
+     "Fn::GetAtt": [
+      "AppRegistry968496A3",
+      "Id"
+     ]
+    },
+    "AttributeGroup": {
+     "Fn::GetAtt": [
+      "AppRegistryDefaultApplicationAttributes15279635",
+      "Id"
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "instance-scheduler-on-aws-remote/AppRegistry/AttributeGroupAssociation53fd40dfa02c"
+   }
+  },
+  "AppRegistryAssociation": {
+   "Type": "AWS::ServiceCatalogAppRegistry::ResourceAssociation",
+   "Properties": {
+    "Application": {
+     "Fn::GetAtt": [
+      "AppRegistry968496A3",
+      "Id"
+     ]
+    },
+    "Resource": {
+     "Ref": "AWS::StackId"
+    },
+    "ResourceType": "CFN_STACK"
+   },
+   "Metadata": {
+    "aws:cdk:path": "instance-scheduler-on-aws-remote/AppRegistryAssociation"
+   }
+  },
+  "EC2SchedulerCrossAccountRole": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "AWS": {
+         "Fn::Sub": [
+          "arn:${AWS::Partition}:iam::${accountId}:root",
+          {
+           "accountId": {
+            "Ref": "InstanceSchedulerAccount"
+           }
+          }
+         ]
+        }
+       }
+      },
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Path": "/",
+    "Policies": [
+     {
+      "PolicyDocument": {
+       "Statement": [
+        {
+         "Action": [
+          "rds:DeleteDBSnapshot",
+          "rds:DescribeDBSnapshots",
+          "rds:StopDBInstance"
+         ],
+         "Effect": "Allow",
+         "Resource": {
+          "Fn::Sub": "arn:${AWS::Partition}:rds:*:${AWS::AccountId}:snapshot:*"
+         }
+        },
+        {
+         "Action": [
+          "rds:AddTagsToResource",
+          "rds:RemoveTagsFromResource",
+          "rds:DescribeDBSnapshots",
+          "rds:StartDBInstance",
+          "rds:StopDBInstance"
+         ],
+         "Effect": "Allow",
+         "Resource": {
+          "Fn::Sub": "arn:${AWS::Partition}:rds:*:${AWS::AccountId}:db:*"
+         }
+        },
+        {
+         "Action": [
+          "rds:AddTagsToResource",
+          "rds:RemoveTagsFromResource",
+          "rds:StartDBCluster",
+          "rds:StopDBCluster"
+         ],
+         "Effect": "Allow",
+         "Resource": {
+          "Fn::Sub": "arn:${AWS::Partition}:rds:*:${AWS::AccountId}:cluster:*"
+         }
+        },
+        {
+         "Action": [
+          "ec2:StartInstances",
+          "ec2:StopInstances",
+          "ec2:CreateTags",
+          "ec2:DeleteTags"
+         ],
+         "Effect": "Allow",
+         "Resource": {
+          "Fn::Sub": "arn:${AWS::Partition}:ec2:*:${AWS::AccountId}:instance/*"
+         }
+        },
+        {
+         "Action": [
+          "rds:DescribeDBClusters",
+          "rds:DescribeDBInstances",
+          "ec2:DescribeInstances",
+          "ssm:DescribeMaintenanceWindows",
+          "ssm:DescribeMaintenanceWindowExecutions",
+          "tag:GetResources"
+         ],
+         "Effect": "Allow",
+         "Resource": "*"
+        }
+       ],
+       "Version": "2012-10-17"
+      },
+      "PolicyName": "EC2InstanceSchedulerRemote"
+     }
+    ],
+    "RoleName": {
+     "Fn::Sub": [
+      "${Namespace}-${Name}",
+      {
+       "Name": {
+        "Fn::FindInMap": [
+         "mappings",
+         "SchedulerRole",
+         "Name"
+        ]
+       }
+      }
+     ]
+    }
+   },
+   "Metadata": {
+    "cfn_nag": {
+     "rules_to_suppress": [
+      {
+       "id": "W11",
+       "reason": "All policies have been scoped to be as restrictive as possible. This solution needs to access ec2/rds resources across all regions."
+      },
+      {
+       "id": "W28",
+       "reason": "The role name is defined to allow cross account access from the hub account."
+      },
+      {
+       "id": "W76",
+       "reason": "All policies have been scoped to be as restrictive as possible. This solution needs to access ec2/rds resources across all regions."
+      }
+     ]
+    },
+    "cdk_nag": {
+     "rules_to_suppress": [
+      {
+       "reason": "All policies have been scoped to be as restrictive as possible. This solution needs to access ec2/rds resources across all regions.",
+       "id": "AwsSolutions-IAM5"
+      }
+     ]
+    }
+   }
+  },
+  "Ec2ModifyInstanceAttrPolicy4B693ACF": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "ec2:ModifyInstanceAttribute",
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Sub": "arn:${AWS::Partition}:ec2:*:${AWS::AccountId}:instance/*"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "Ec2ModifyInstanceAttrPolicy4B693ACF",
+    "Roles": [
+     {
+      "Ref": "EC2SchedulerCrossAccountRole"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "instance-scheduler-on-aws-remote/Ec2ModifyInstanceAttrPolicy/Resource",
+    "cdk_nag": {
+     "rules_to_suppress": [
+      {
+       "reason": "All policies have been scoped to be as restrictive as possible. This solution needs to access ec2/rds resources across all regions.",
+       "id": "AwsSolutions-IAM5"
+      }
+     ]
+    }
+   }
+  },
+  "SSMParameterNamespace2002A907": {
+   "Type": "AWS::SSM::Parameter",
+   "Properties": {
+    "Description": "This parameter is for Instance Scheduler solution to support accounts in AWS Organizations.",
+    "Name": "/instance-scheduler/do-not-delete-manually",
+    "Type": "String",
+    "Value": {
+     "Ref": "Namespace"
+    }
+   },
+   "DependsOn": [
+    "schedulerssmparameterstoreevent"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "instance-scheduler-on-aws-remote/SSMParameterNamespace/Resource"
+   },
+   "Condition": "IsMemberOfOrganization"
+  },
+  "SchedulerEventDeliveryRole5AE883C1": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "events.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Description": "Event Role to add the permissions necessary to migrate a sender-receiver relationship to Use AWS Organizations"
+   },
+   "Metadata": {
+    "aws:cdk:path": "instance-scheduler-on-aws-remote/SchedulerEventDeliveryRole/Resource"
+   },
+   "Condition": "IsMemberOfOrganization"
+  },
+  "SchedulerEventDeliveryPolicyD8B17948": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "events:PutEvents",
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Sub": [
+         "arn:${AWS::Partition}:events:${AWS::Region}:${InstanceSchedulerAccount}:event-bus/${Namespace}-${EventBusName}",
+         {
+          "EventBusName": {
+           "Fn::FindInMap": [
+            "mappings",
+            "SchedulerEventBusName",
+            "Name"
+           ]
+          }
+         }
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "SchedulerEventDeliveryPolicyD8B17948",
+    "Roles": [
+     {
+      "Ref": "SchedulerEventDeliveryRole5AE883C1"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "instance-scheduler-on-aws-remote/SchedulerEventDeliveryPolicy/Resource"
+   },
+   "Condition": "IsMemberOfOrganization"
+  },
+  "schedulerssmparameterstoreevent": {
+   "Type": "AWS::Events::Rule",
+   "Properties": {
+    "Description": "Event rule to invoke Instance Scheduler lambda function to store spoke account id in configuration.",
+    "EventPattern": {
+     "account": [
+      {
+       "Ref": "AWS::AccountId"
+      }
+     ],
+     "source": [
+      "aws.ssm"
+     ],
+     "detail-type": [
+      "Parameter Store Change"
+     ],
+     "detail": {
+      "name": [
+       "/instance-scheduler/do-not-delete-manually"
+      ],
+      "operation": [
+       "Create",
+       "Delete"
+      ],
+      "type": [
+       "String"
+      ]
+     }
+    },
+    "State": "ENABLED",
+    "Targets": [
+     {
+      "Arn": {
+       "Fn::Sub": [
+        "arn:${AWS::Partition}:events:${AWS::Region}:${InstanceSchedulerAccount}:event-bus/${Namespace}-${EventBusName}",
+        {
+         "EventBusName": {
+          "Fn::FindInMap": [
+           "mappings",
+           "SchedulerEventBusName",
+           "Name"
+          ]
+         }
+        }
+       ]
+      },
+      "Id": "Spoke-SSM-Parameter-Event",
+      "RoleArn": {
+       "Fn::GetAtt": [
+        "SchedulerEventDeliveryRole5AE883C1",
+        "Arn"
+       ]
+      }
+     }
+    ]
+   },
+   "DependsOn": [
+    "SchedulerEventDeliveryRole5AE883C1"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "instance-scheduler-on-aws-remote/scheduler-ssm-parameter-store-event"
+   },
+   "Condition": "IsMemberOfOrganization"
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/3VRMW7DMAx8S3ZZsd2haw0PnYoE7gMKRmZcJrIkiJKDwNDfC7lJ4KDodDziJPKOtZyrl1dZbuDCherPhaaDnD8DqLNoj2YPHkYM6DNprekpkDWZfIBzZAYBF/6aGf1EChUE0HYA5zwOxMFf5dweTeOcJgX3l00Ing4x4Lu30f3tNMxW0UPeIdvoFa7aSRCMcu6sxkWRcW81qeuy81IlwTxmJ57M8GTjQZLACU1gmf+IGpO4z8qyXQwuhvUGSVRlLcsCtPsGWW7ebpltM/4bwU0+r1N4NpySMLZHeeLtVJeyyuc4MVHhowk0oux+8QcJax7KrAEAAA=="
+   },
+   "Metadata": {
+    "aws:cdk:path": "instance-scheduler-on-aws-remote/CDKMetadata/Default"
+   },
+   "Condition": "CDKMetadataAvailable"
+  }
+ },
+ "Outputs": {
+  "CrossAccountRole": {
+   "Description": "Arn for cross account role for Instance scheduler, add this arn to the list of crossaccount roles (CrossAccountRoles) parameter of the Instance Scheduler template.",
+   "Value": {
+    "Fn::GetAtt": [
+     "EC2SchedulerCrossAccountRole",
+     "Arn"
+    ]
+   }
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

@@ -1,0 +1,38 @@
+---
+template:
+  type: file
+  path: schedules.yaml.j2
+
+sceptre_user_data:
+  project_code: "{{project_code}}"
+  service_token: !stack_output "{{pwd}}/solution.yaml::ServiceInstanceScheduleServiceToken"
+  schedules:
+    - name: schedule01
+      schedule_name: BrisbaneBusinessHours
+      no_stack_prefix: "True"
+      stop_new_instances: "True"
+      enforced: "True"
+      metrics: "False"
+      timezone: Australia/Brisbane
+      hibernate: "False"
+      retain_running: "False"
+      description: Running between MON-FRI 08:00-18:00
+      periods:
+        - begin_time: "08:00"
+          end_time: "18:00"
+          week_days: Mon-Fri
+    - name: schedule02
+      schedule_name: SydneyStopAt5PM
+      no_stack_prefix: "True"
+      stop_new_instances: "True"
+      enforced: "True"
+      metrics: "False"
+      timezone: Australia/Sydney
+      hibernate: "False"
+      retain_running: "False"
+      description: Stop instances at 5PM Sydney time
+      periods:
+        - end_time: "17:00"
+
+stack_tags:
+  SourceRepoUrl: "{{source_repo_url}}"

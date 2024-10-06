@@ -1,0 +1,4 @@
+---
+pwd: hub
+cfn_path: hub
+template_bucket_suffix: instance-scheduler-w9z

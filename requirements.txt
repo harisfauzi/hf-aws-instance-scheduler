@@ -1,0 +1,3 @@
+sceptre==4.4.2
+sceptre-ssm-resolver
+pre-commit

@@ -1,0 +1,4 @@
+{
+  "*.{js,ts,tsx,json,yml,yaml}": "eslint",
+  "*.sh": "shellcheck"
+}

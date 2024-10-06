@@ -1,0 +1,14 @@
+---
+# This will be prepended to your CloudFormation stack names.
+project_code: instance-scheduler
+# Use your main AWS region as default.
+region: "{{var.aws_region|default('ap-southeast-2')}}"
+# If you store this in different repo/SCM, update this to the URL of your actual repo.
+source_repo_url: https://github.com/harisfauzi/hf-aws-instance-scheduler.git
+
+# Change this to AWS Account ID where you deploy the instance-scheduler solution.
+account_id_hub: "111111111111"
+# Change this and add more remote accounts as necessary, and update hub/solution.yaml as necessary.
+account_id_remote1: "222222222222"
+solution_namespace: dev
+solution_version: v3.0.5

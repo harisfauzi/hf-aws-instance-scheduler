@@ -1,0 +1,80 @@
+---
+Description: {{sceptre_user_data.description|default('Schedules for '+sceptre_user_data.project_code)}}
+AWSTemplateFormatVersion: 2010-09-09
+
+Resources:
+{%- for schedule in sceptre_user_data.schedules %}{# BEGIN {%- for schedule in sceptre_user_data.schedules %} #}
+{%- set schedule_name = schedule.name %}
+  {{schedule_name}}:
+    Type: Custom::ServiceInstanceSchedule
+    DeletionPolicy: {{schedule.deletion_policy | default('Delete')}}
+    UpdateReplacePolicy: {{schedule.update_replace_policy | default('Delete')}}
+    Properties:
+      ServiceToken: {{sceptre_user_data.service_token}}
+{%- if schedule.no_stack_prefix is defined %}
+      NoStackPrefix: "{{schedule.no_stack_prefix}}"
+{%- endif %}
+{%- if schedule.schedule_name is defined %}
+      Name: {{schedule.schedule_name}}
+{%- endif %}
+{%- if schedule.override_status is defined %}
+      OverrideStatus: "{{schedule.override_status}}"
+{%- endif %}
+{%- if schedule.overwrite is defined %}
+      Overwrite: "{{schedule.overwrite}}"
+{%- endif %}
+{%- if schedule.metrics is defined %}
+      Metrics: "{{schedule.metrics}}"
+{%- endif %}
+{%- if schedule.description is defined %}
+      Description: {{schedule.description}}
+{%- endif %}
+{%- if schedule.timezone is defined %}
+      Timezone: {{schedule.timezone}}
+{%- endif %}
+{%- if schedule.enforced is defined %}
+      Enforced: "{{schedule.enforced}}"
+{%- endif %}
+{%- if schedule.hibernate is defined %}
+      Hibernate: "{{schedule.hibernate}}"
+{%- endif %}
+{%- if schedule.retain_running is defined %}
+      RetainRunning: "{{schedule.retain_running}}"
+{%- endif %}
+{%- if schedule.stop_new_instances is defined %}
+      StopNewInstances: "{{schedule.stop_new_instances}}"
+{%- endif %}
+{%- if schedule.use_maintenance_window is defined %}
+      UseMaintenanceWindow: "{{schedule.use_maintenance_window}}"
+{%- endif %}
+{%- if schedule.ssm_maintenance_window is defined %}
+      SsmMaintenanceWindow: "{{schedule.ssm_maintenance_window}}"
+{%- endif %}
+{%- if schedule.periods is defined %}{# BEGIN {%- if schedule.periods is defined %} #}
+      Periods:
+{%- for period in schedule.periods %}{# BEGIN {%- for period in schedule.periods %} #}
+        - 
+{%- if period.description is defined %}
+          Description: {{period.description}}
+{%- endif %}
+{%- if period.begin_time is defined %}
+          BeginTime: "{{period.begin_time}}"
+{%- endif %}
+{%- if period.end_time is defined %}
+          EndTime: "{{period.end_time}}"
+{%- endif %}
+{%- if period.instance_type is defined %}
+          InstanceType: {{period.instance_type}}
+{%- endif %}
+{%- if period.month_days is defined %}
+          MonthDays: {{period.month_days}}
+{%- endif %}
+{%- if period.months is defined %}
+          Months: {{period.months}}
+{%- endif %}
+{%- if period.week_days is defined %}
+          WeekDays: {{period.week_days}}
+{%- endif %}
+{%- endfor %}{# END {%- for period in schedule.periods %} #}
+{%- endif %}{# END {%- if schedule.periods is defined %} #}
+{%- endfor %}{# END {%- for schedule in sceptre_user_data.schedules %} #}

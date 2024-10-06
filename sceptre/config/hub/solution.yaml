@@ -1,0 +1,53 @@
+---
+template:
+  type: s3
+  path: solutions-reference/instance-scheduler-on-aws/{{solution_version}}/instance-scheduler-on-aws.template
+  # type: http
+  # url: https://s3.amazonaws.com/solutions-reference/instance-scheduler-on-aws/{{solution_version}}/instance-scheduler-on-aws.template
+dependencies:
+  - "{{pwd}}/s3-bucket.yaml"
+
+template_bucket_name: "{{account_id_hub}}-{{template_bucket_suffix}}"
+
+parameters:
+  # v3.0.5 parameters
+  # PG: Scheduler (v3.0.5)
+  TagName: "{{solution_namespace}}:scheduler-config"
+  SchedulerFrequency: "2"
+  DefaultTimezone: Australia/Brisbane
+  SchedulingActive: "Yes"
+  # PG: Services
+  ScheduleEC2: Enabled
+  ScheduleRds: Enabled
+  EnableRdsClusterScheduling: Disabled
+  ScheduleNeptune: Disabled
+  ScheduleDocDb: Disabled
+  ScheduleASGs: Disabled
+  # PG: Tagging
+  StartedTags: "{{solution_namespace}}:InstanceScheduler-LastAction=Started by stack {scheduler} on {year}/{month}/{day} at {hour}:{minute} {timezone}"
+  StoppedTags: "{{solution_namespace}}:InstanceScheduler-LastAction=Stopped by stack {scheduler} on {year}/{month}/{day} at {hour}:{minute} {timezone}"
+  # PG: Service-specific
+  EnableSSMMaintenanceWindows: "No"
+  # KmsKeyArns:
+  CreateRdsSnapshot: "No"
+  # AsgScheduledTagKey:
+  # AsgRulePrefix:
+  # PG: Account Structure
+  UsingAWSOrganizations: "No"
+  Namespace: "{{solution_namespace}}"
+  Principals: >
+    {{account_id_remote1}}
+  # Regions:
+  ScheduleLambdaAccount: "Yes"
+  # PG: Monitoring
+  LogRetentionDays: "3"
+  Trace: "Yes"
+  OpsMonitoring: Disabled
+  # PG: Other
+  MemorySize: "128"
+  # AsgMemorySize:
+  # OrchestratorMemorySize:
+  ddbDeletionProtection: Disabled
+
+stack_tags:
+  SourceRepoUrl: "{{source_repo_url}}"
