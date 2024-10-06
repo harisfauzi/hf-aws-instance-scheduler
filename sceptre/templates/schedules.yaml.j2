@@ -20,9 +20,6 @@ Resources:
 {%- if schedule.override_status is defined %}
       OverrideStatus: "{{schedule.override_status}}"
 {%- endif %}
-{%- if schedule.overwrite is defined %}
-      Overwrite: "{{schedule.overwrite}}"
-{%- endif %}
 {%- if schedule.metrics is defined %}
       Metrics: "{{schedule.metrics}}"
 {%- endif %}

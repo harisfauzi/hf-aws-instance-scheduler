@@ -33,6 +33,28 @@ sceptre_user_data:
       description: Stop instances at 5PM Sydney time
       periods:
         - end_time: "17:00"
+    - name: schedule03
+      schedule_name: EnforceRunning
+      no_stack_prefix: "True"
+      stop_new_instances: "True"
+      enforced: "True"
+      override_status: running
+      metrics: "False"
+      timezone: UTC
+      hibernate: "False"
+      retain_running: "False"
+      description: Enforce instances to run
+    - name: schedule04
+      schedule_name: EnforceStopped
+      no_stack_prefix: "True"
+      stop_new_instances: "True"
+      enforced: "True"
+      override_status: stopped
+      metrics: "False"
+      timezone: UTC
+      hibernate: "False"
+      retain_running: "False"
+      description: Enforce instances to stop
 
 stack_tags:
   SourceRepoUrl: "{{source_repo_url}}"
