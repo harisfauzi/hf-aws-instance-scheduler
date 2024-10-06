@@ -13,7 +13,7 @@ parameters:
   # v3.0.5 parameters
   # PG: Scheduler (v3.0.5)
   TagName: "{{solution_namespace}}:scheduler-config"
-  SchedulerFrequency: "2"
+  SchedulerFrequency: "1"
   DefaultTimezone: Australia/Brisbane
   SchedulingActive: "Yes"
   # PG: Services
