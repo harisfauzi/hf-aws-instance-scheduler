@@ -4,13 +4,6 @@ template:
   url: https://s3.amazonaws.com/solutions-reference/instance-scheduler-on-aws/{{solution_version}}/instance-scheduler-on-aws-remote.template
 
 parameters:
-  # # Version v1.5.6
-  # # PG: Namespace Configuration
-  # Namespace: "{{solution_namespace}}"
-  # # PG: Account Structure
-  # InstanceSchedulerAccount: "{{account_id_hub}}"
-  # UsingAWSOrganizations: "No"
-
   # Version v3.0.5
   # PG: Account Structure
   InstanceSchedulerAccount: "{{account_id_hub}}"
